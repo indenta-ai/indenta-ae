@@ -69,8 +69,6 @@ const ChatAppAlert = () => {
 
     // Call fetchSessionId function when component mounts
     fetchSessionId();
-
-    
   }, []);
 
   // Function to handle sending messages
