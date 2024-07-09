@@ -64,17 +64,12 @@ const ChatAppAlert = () => {
         }
       } catch (error) {
         console.error('Error initializing session:', error.message);
-        MySwal.update({
-          html: '<p>Failed to initialize session. Please try again later.</p>',
-          confirmButtonText: 'Retry',
-        }).then(() => {
-          fetchSessionId();
-        });
+        Swal.fire('Error', 'Failed to initialize session. Please try again later.', 'error');
       }
     };
 
     // Call fetchSessionId function when component mounts
-    // fetchSessionId();
+    fetchSessionId();
 
     
   }, []);
