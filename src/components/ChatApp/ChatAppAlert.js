@@ -29,6 +29,7 @@ const ChatAppAlert = () => {
           html: '<input type="email" id="email" class="swal2-input" placeholder="Enter your email" required>',
           confirmButtonText: 'Continue',
           allowOutsideClick: false,
+          allowEscapeKey : false,
           preConfirm: () => {
             const email = Swal.getPopup().querySelector('#email').value;
             if (!email || !email.includes('@') || !email.includes('.')) {
@@ -63,7 +64,12 @@ const ChatAppAlert = () => {
         }
       } catch (error) {
         console.error('Error initializing session:', error.message);
-        Swal.fire('Error', 'Failed to initialize session. Please try again later.', 'error');
+        MySwal.update({
+          html: '<p>Failed to initialize session. Please try again later.</p>',
+          confirmButtonText: 'Retry',
+        }).then(() => {
+          fetchSessionId();
+        });
       }
     };
 
