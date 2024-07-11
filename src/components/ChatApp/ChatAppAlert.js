@@ -43,7 +43,7 @@ const ChatAppAlert = () => {
 
         if (result.isConfirmed) {
           const email = result.value;
-          const response = await axios.post('http://chat.indenta.ae:8000/init-session/', {
+          const response = await axios.post('https://chat.indenta.ai/init-session/', {
           // const response = await axios.post('http://chat.indenta.ai:8000/init-session/', {
             email
           }, {
@@ -86,7 +86,7 @@ const ChatAppAlert = () => {
         const sessionId = localStorage.getItem('session_id'); // Retrieve session ID from localStorage
         console.log('bot session', sessionId);
 
-        const response = await axios.post('http://chat.indenta.ae:8000/message/', {
+        const response = await axios.post('https://chat.indenta.ai/message/', {
         // const response = await axios.post('http://chat.indenta.ai:8000/message/', {
           message: inputValue,
           // url: 'http://chat.indenta.ai:8000/message/',
