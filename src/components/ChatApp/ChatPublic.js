@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import SendIcon from '@mui/icons-material/Send';
 import girlchat from './images/ayesha.png';
 import Image from 'next/image';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
+import Modal from 'react-modal';
 
 const MySwal = withReactContent(Swal);
+Modal.setAppElement('#__next');
 
 const ChatAppAlert = () => {
   const [messages, setMessages] = useState([]);
@@ -17,6 +20,8 @@ const ChatAppAlert = () => {
   const [welcomeMessageShown, setWelcomeMessageShown] = useState(false);
   const messagesEndRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ message: '', imageUrl: '', link: '' });
 
   useEffect(() => {
     const handleResize = () => {
@@ -63,7 +68,6 @@ const ChatAppAlert = () => {
         if (result.isConfirmed) {
           const email = result.value;
           const response = await axios.post('https://chat.indenta.ai/init-session/', {
-            // const response = await axios.post('http://chat.indenta.ai:8000/init-session/', {
             email
           }, {
             headers: {
@@ -89,8 +93,6 @@ const ChatAppAlert = () => {
 
     // Call fetchSessionId function when component mounts
     fetchSessionId();
-
-
   }, []);
 
   // Function to handle sending messages
@@ -106,9 +108,7 @@ const ChatAppAlert = () => {
         console.log('bot session', sessionId);
 
         const response = await axios.post('https://chat.indenta.ai/message/', {
-          // const response = await axios.post('http://chat.indenta.ai:8000/message/', {
           message: inputValue,
-          // url: 'http://chat.indenta.ai:8000/message/',
           session_id: sessionId,
         }, {
           headers: {
@@ -120,19 +120,7 @@ const ChatAppAlert = () => {
         if (response.status === 200) {
           const data = response.data;
           let botMessage = data.response;
-          // botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-          // botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-          // botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br />');
-          botMessage = botMessage
-            // .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // .replace(/\#\#(.#?)\#\#/g, '<strong>$1</strong>')
-            // .replace(/\#\#\#(.#?)\#\#\#/g, '<strong>$1</strong>')
-            // .replace(/\n/g, '<br />')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold text with **
-            .replace(/##([^#]+)##/g, '<strong>$1</strong>')   // Bold text with ##
-            .replace(/###([^#]+)###/g, '<strong>$1</strong>')
-            .replace(/\n/g, '<br />');
-          // .replace(/\b([IVXLCDM]+)\b/g, '<strong>$1</strong>');
+          botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br />');
           setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: botMessage }]);
         } else {
           throw new Error('Failed to send message');
@@ -145,11 +133,6 @@ const ChatAppAlert = () => {
       }
     }
   };
-
-  // Function to scroll to the bottom of messages
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  // };
 
   const scrollToBottom = () => {
     if (messages.length > 1 || (messages.length === 1 && welcomeMessageShown)) {
@@ -188,21 +171,6 @@ const ChatAppAlert = () => {
   }, []);
 
   useEffect(() => {
-    const handleOkClick = (message, imageUrl, link) => {
-      const linkHtml = link ? `<a href="${link}" target="_blank" style="color : black;color: black; font-size: 15px; text-decoration: underline;">Click here for more details</a>` : '';
-      const imageHtml = imageUrl ? `<img src="${imageUrl}" alt="Offer Image" style="width: 100%; max-height: 450px; height: auto; max-width: 450px;" />` : '';
-      MySwal.fire({
-        html: `
-          <div>
-            ${imageHtml}
-            <p>${message}</p>
-            ${linkHtml}
-          </div>
-        `,
-        confirmButtonText: 'OK'
-      });
-    };
-
     const offers = [
       { id: 'cbdOne', message: 'Details about CBD One', imageUrl: '/assets/img/pics/pdf0.jpg' },
       { id: 'platinum', message: 'Details about CBD Smiles Visa Platinum', imageUrl: '/assets/img/pics/pdf2.jpg' },
@@ -213,93 +181,137 @@ const ChatAppAlert = () => {
       { id: 'infinite', message: 'Details about Visa Infinite', imageUrl: '/assets/img/pics/S2.jpg' },
     ];
 
+    const handleOfferClick = (offer) => {
+      setModalContent({ message: offer.message, imageUrl: offer.imageUrl });
+      setIsModalOpen(true);
+    };
+
     offers.forEach(offer => {
       const element = document.getElementById(offer.id);
       if (element) {
-        element.addEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
+        element.onclick = () => handleOfferClick(offer);
       }
     });
 
-    // Cleanup function to remove event listeners
     return () => {
       offers.forEach(offer => {
         const element = document.getElementById(offer.id);
         if (element) {
-          element.removeEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
+          element.onclick = null; // Clean up
         }
       });
     };
-  }, [messages]);
+  }, []);
 
-  // Function to handle Enter key press
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       handleSend();
     }
   };
 
-  // Rendering JSX
   return (
     <>
-      <div style={{ height: '100vh' }} className="d-flex bg-light">
-        <div className="d-flex flex-column flex-grow-1">
-          <div className="p-3 bg-white border-bottom d-flex align-items-center" style={{ position: 'fixed', width: '100%' }}>
-            <Image src={girlchat} alt="Bot" width={60} height={60} style={{ borderRadius: '50%' }} />
-            <div className="ms-3">
-              <div className="fw-semibold">Ayesha</div>
-              <div className="text-muted small" style={{ display: 'inline-block' }}>
-                <span style={{ height: '15px', width: '15px', backgroundColor: 'green', borderRadius: '50%', display: 'inline-block', marginTop: '2.6px', marginRight: '2px' }}></span>
-                <span>Active Now</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex-grow-1 p-4 overflow-auto" style={{ marginTop: '5rem' }}>
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`d-flex ${message.sender === 'user' ? 'justify-content-end' : ''} mb-3`}
-                style={{
-                  marginLeft: message.sender === 'user' ? 'auto' : '0',
-                  width: isMobile ? '100%' : '50%',
-                }}
-              >
-                {message.sender === 'bot' ? (
-                  <div
-                    className={`p-2 rounded bg-light border`}
-                    dangerouslySetInnerHTML={{ __html: message.text }}
-                  />
-                ) : (
-                  <div
-                    className={`p-2 rounded bg-primary text-white`}
-                  >
-                    {message.text}
-                  </div>
-                )}
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-            {sendingMessage && (
-              <div className="text-muted mt-2" style={{ marginRight: 'auto' }}>
-                typing
-              </div>
-            )}
-          </div>
-          <div className="p-4 bg-white border-top d-flex align-items-center">
-            <input
-              type="text"
-              placeholder="Type a message..."
-              className="form-control flex-grow-1"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={sendingMessage}
-            />
-            <button className="btn btn-primary ms-2" onClick={handleSend} disabled={sendingMessage}>
-              <SendIcon />
-            </button>
-          </div>
+      <div className="chat-app">
+        <div className="chat-messages">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`chat-message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
+              dangerouslySetInnerHTML={{ __html: message.text }}
+            ></div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+        <div className="chat-input">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type a message..."
+          />
+          <button onClick={handleSend} disabled={sendingMessage}>
+            {sendingMessage ? 'Sending...' : <SendIcon />}
+          </button>
         </div>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Offer Details"
+        className="custom-modal"
+      >
+        <h2>Offer Details</h2>
+        <p>{modalContent.message}</p>
+        {modalContent.imageUrl && (
+          <Image
+            src={modalContent.imageUrl}
+            alt="Offer"
+            layout="responsive"
+            width={450}
+            height={450}
+          />
+        )}
+        <button onClick={() => setIsModalOpen(false)}>Close</button>
+      </Modal>
+      <style jsx>{`
+        .chat-app {
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          max-height: 100vh;
+          overflow: hidden;
+        }
+        .chat-messages {
+          flex: 1;
+          overflow-y: auto;
+          padding: 10px;
+        }
+        .chat-message {
+          margin-bottom: 10px;
+          padding: 10px;
+          border-radius: 5px;
+        }
+        .user-message {
+          background-color: #d1ffd6;
+          align-self: flex-end;
+        }
+        .bot-message {
+          background-color: #f1f1f1;
+          align-self: flex-start;
+        }
+        .chat-input {
+          display: flex;
+          padding: 10px;
+          border-top: 1px solid #ccc;
+        }
+        .chat-input input {
+          flex: 1;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          margin-right: 10px;
+        }
+        .chat-input button {
+          padding: 10px 15px;
+          border: none;
+          background-color: #007bff;
+          color: white;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        .chat-input button:disabled {
+          background-color: #ccc;
+        }
+        .custom-modal {
+          background: white;
+          padding: 20px;
+          max-width: 500px;
+          margin: auto;
+          border-radius: 8px;
+          overflow: auto;
+        }
+      `}</style>
     </>
   );
 };
