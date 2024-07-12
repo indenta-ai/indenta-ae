@@ -209,11 +209,11 @@ const ChatAppAlert = () => {
     };
   
     const offers = [
-      { id: 'cbdOne', message: 'Details about CBD One', imageUrl: '', link: 'https://www.cbd.ae/cbdnowcm/Products-v3/cbd-one-credit-card' },
-      { id: 'platinum', message: 'Details about CBD Smiles Visa Platinum', imageUrl: '', link: 'https://www.cbd.ae/cbdnowcm/Products-v3/Visa-Platinum' },
+      { id: 'cbdOne', message: 'Details about CBD One', imageUrl: '/assests/img/pics/pdf0.jpg' },
+      { id: 'platinum', message: 'Details about CBD Smiles Visa Platinum', imageUrl: '/assests/img/pics/pdf2.jpg' },
       { id: 'signature', message: 'Details about CBD Smiles Visa Signature', imageUrl: '/assets/img/pics/cp.JPG' },
       { id: 'reward', message: 'Details about CBD Yes Rewards Credit Card', imageUrl: '/assets/img/pics/cp2.jpg' },
-      { id: 'superSaver', message: 'Details about Super Saver Visa Signature', imageUrl: '', link: 'https://www.cbd.ae/cbdnowcm/Products-v3/super-saver-credit-card' },
+      { id: 'superSaver', message: 'Details about Super Saver Visa Signature', imageUrl: '/assests/img/pics/pdf3.jpg' },
       { id: 'visaPlatinum', message: 'Details about Visa Platinum', imageUrl: '/assets/img/pics/cp3.jpg' },
       { id: 'infinite', message: 'Details about Visa Infinite', imageUrl: '/assets/img/pics/S2.jpg' },
     ];
