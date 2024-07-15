@@ -16,6 +16,7 @@ const ChatAppAlert = () => {
   const [email, setEmail] = useState('');
   const [welcomeMessageShown, setWelcomeMessageShown] = useState(false);
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -119,6 +120,7 @@ const ChatAppAlert = () => {
 
         if (response.status === 200) {
           const data = response.data;
+          console.log('data--->', data)
           let botMessage = data.response;
           // botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
           // botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -130,10 +132,13 @@ const ChatAppAlert = () => {
             // .replace(/\n/g, '<br />')
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold text with **
             .replace(/##([^#]+)##/g, '<strong>$1</strong>')   // Bold text with ##
-            .replace(/###([^#]+)###/g, '<strong>$1</strong>')
+            .replace(/###([^#]+)###/g, '<strong>$1</strong><br />')
+            .replace(/#([^#]+)#/g, '<strong>$1</strong>')
             .replace(/\n/g, '<br />');
           // .replace(/\b([IVXLCDM]+)\b/g, '<strong>$1</strong>');
+          console.log('botMessage--->', botMessage)
           setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: botMessage }]);
+          console.log('Message--->', messages)
         } else {
           throw new Error('Failed to send message');
         }
@@ -142,6 +147,7 @@ const ChatAppAlert = () => {
         setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Something went wrong, try again later!' }]);
       } finally {
         setSendingMessage(false);
+        inputRef.current.focus();
       }
     }
   };
@@ -279,20 +285,24 @@ const ChatAppAlert = () => {
             ))}
             <div ref={messagesEndRef} />
             {sendingMessage && (
-              <div className="text-muted mt-2" style={{ marginRight: 'auto' }}>
-                typing
+              // <div className="text-muted mt-2" style={{ marginRight: 'auto' }}>
+              //   typing
+              // </div>
+              <div className="message bot-message dancing-dots" style={{ fontSize: '3rem', marginRight: 'auto' }}>
+                &nbsp;
               </div>
             )}
           </div>
           <div className="p-4 bg-white border-top d-flex align-items-center">
             <input
+              ref={inputRef}
               type="text"
-              placeholder="Type a message..."
-              className="form-control flex-grow-1"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={sendingMessage}
+              onKeyPress={(e) => e.key === 'Enter' && !sendingMessage && handleSend()}
+              placeholder="Type a message..."
+              className="form-control flex-grow-1"
+              // disabled={sendingMessage}
             />
             <button className="btn btn-primary ms-2" onClick={handleSend} disabled={sendingMessage}>
               <SendIcon />

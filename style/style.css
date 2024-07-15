@@ -54,11 +54,11 @@ a {
     }
 }
 
-.social-area{
+.social-area {
     cursor: pointer;
 }
 
-.circle-container{
+.circle-container {
     bottom: 75px !important;
 }
 
@@ -72,18 +72,45 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  
-  .modal-content {
+}
+
+.modal-content {
     background: white;
     padding: 20px;
     border-radius: 8px;
     position: relative;
-  }
-  
-  .close {
+}
+
+.close {
     position: absolute;
     top: 10px;
     right: 10px;
     cursor: pointer;
-  }  
+}
+
+@keyframes dancing-dots {
+    0% {
+        content: '.';
+    }
+
+    33% {
+        content: '..';
+    }
+
+    66% {
+        content: '...';
+    }
+
+    100% {
+        content: '.';
+    }
+}
+
+.dancing-dots {
+    font-size: 20px;
+}
+
+.dancing-dots::after {
+    content: '';
+    animation: dancing-dots 1s steps(3, end) infinite;
+}
