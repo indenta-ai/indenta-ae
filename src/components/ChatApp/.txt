@@ -6,8 +6,26 @@ import Image from 'next/image';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import { Modal, Button } from 'react-bootstrap';
+import Dialog from '@mui/material/Dialog';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemButton from '@mui/material/ListItemButton';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
 
 const MySwal = withReactContent(Swal);
+
+const Transition = React.forwardRef(function Transition(
+  props,
+  ref,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const ChatAppAlert = () => {
   const [messages, setMessages] = useState([]);
@@ -19,6 +37,8 @@ const ChatAppAlert = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState({ message: '', imageUrl: '', link: '' });
 
   useEffect(() => {
     const handleResize = () => {
@@ -91,8 +111,6 @@ const ChatAppAlert = () => {
 
     // Call fetchSessionId function when component mounts
     fetchSessionId();
-
-
   }, []);
 
   // Function to handle sending messages
@@ -154,10 +172,6 @@ const ChatAppAlert = () => {
   };
 
   // Function to scroll to the bottom of messages
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  // };
-
   const scrollToBottom = () => {
     if (messages.length > 1 || (messages.length === 1 && welcomeMessageShown)) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -176,142 +190,131 @@ const ChatAppAlert = () => {
       <br /><br />As a valued customer, we are eager to inform you about a special credit offer exclusively for you. We are proposing an opportunity to enhance your purchasing power and enjoy a more flexible shopping experience.<br />Here are the details of your special credit offer:<br /><br /><b style="font-size : 16px ">•</b> Credit Limit: Up to 4 Multiple of your salary
       <br /><b style="font-size : 16px ">•</b> NO Interest % on BT and EPP<br /><b style="font-size : 16px ">•</b> Airport lounge access for you through Lounge Key<br /><b style="font-size : 16px ">•</b> Access to a digital concierge channel in addition to telephone and email service<br /><b style="font-size : 16px ">•</b> 50% off on movie tickets at Novo, Reel & VOX cinemas<br /><b style="font-size : 16px ">•</b> Complimentary valet parking service across 30 locations<br /><b style="font-size : 16px ">•</b> Spend AED 500 for an entry into the lucky draw of AED 100,000 every week!<br /><b style="font-size : 16px ">•</b> No annual fees on Credit cards<br /><br />
       <p>We are offering the following credit cards:</p>
-      <div class="softButtons" style="display: flex;justify-content: space-between;flex-wrap: wrap;margin-left : 1rem;;margin-top : 1rem">
-        <ul style="list-style-type: disclosure-closed;font-weight : 550">
-          <li id="cbdOne">CBD One</li>
-          <li id="platinum">CBD Smiles Visa Platinum</li>
-          <li id="signature">CBD Smiles Visa Signature</li>
-          <li id="reward">CBD Yes Rewards Credit Card</li>
-        </ul>
-        <ul style="list-style-type: disclosure-closed;font-weight : 550">
-          <li id="superSaver">Super Saver Visa Signature</li>
-          <li id="visaPlatinum">Visa Platinum</li>
-          <li id="infinite">Visa Infinite</li>
-        </ul>
+      <div class="softButtons" style="text-align: center;">
+        <button class="softbutton" style="background-color: green; color: white; padding: 8px 12px; margin: 5px; border: none; border-radius: 4px;" onclick="window.showOffer1()">Card 1</button>
+        <button class="softbutton" style="background-color: blue; color: white; padding: 8px 12px; margin: 5px; border: none; border-radius: 4px;" onclick="window.showOffer2()">Card 2</button>
+        <button class="softbutton" style="background-color: purple; color: white; padding: 8px 12px; margin: 5px; border: none; border-radius: 4px;" onclick="window.showOffer3()">Card 3</button>
       </div>
+      <p>Simply click the buttons to explore your options and let me know if you would like to take advantage of this offer.</p>
+      <p>If you have any questions or need further information, feel free to ask!</p>
+      <div class="customdiv"><img src="/cbdoffer.png" alt="Image description" style="max-width: 100%; height: auto;"></div>
     `;
+
     setMessages([{ sender: 'bot', text: welcomeMessage }]);
     setWelcomeMessageShown(true);
+
+    // Assign the functions to window object
+    window.showOffer1 = () => showOffer1();
+    window.showOffer2 = () => showOffer2();
+    window.showOffer3 = () => showOffer3();
   }, []);
 
-  useEffect(() => {
-    const handleOkClick = (message, imageUrl, link) => {
-      const linkHtml = link ? `<a href="${link}" target="_blank" style="color : black;color: black; font-size: 15px; text-decoration: underline;">Click here for more details</a>` : '';
-      const imageHtml = imageUrl ? `<img src="${imageUrl}" alt="Offer Image" style="width: 100%; max-height: 450px; height: auto; max-width: 450px;" />` : '';
-      MySwal.fire({
-        html: `
-          <div>
-            ${imageHtml}
-            <p>${message}</p>
-            ${linkHtml}
-          </div>
-        `,
-        confirmButtonText: 'OK'
-      });
-    };
-
-    const offers = [
-      { id: 'cbdOne', message: 'Details about CBD One', imageUrl: '/assets/img/pics/pdf3.jpg' },
-      { id: 'platinum', message: 'Details about CBD Smiles Visa Platinum', imageUrl: '/assets/img/pics/pdf2.jpg' },
-      { id: 'signature', message: 'Details about CBD Smiles Visa Signature', imageUrl: '/assets/img/pics/cp.JPG' },
-      { id: 'reward', message: 'Details about CBD Yes Rewards Credit Card', imageUrl: '/assets/img/pics/cp2.jpg' },
-      { id: 'superSaver', message: 'Details about Super Saver Visa Signature', imageUrl: '/assets/img/pics/pdf0.jpg' },
-      { id: 'visaPlatinum', message: 'Details about Visa Platinum', imageUrl: '/assets/img/pics/cp3.jpg' },
-      { id: 'infinite', message: 'Details about Visa Infinite', imageUrl: '/assets/img/pics/S2.jpg' },
-    ];
-
-    offers.forEach(offer => {
-      const element = document.getElementById(offer.id);
-      if (element) {
-        element.addEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
-      }
-    });
-
-    // Cleanup function to remove event listeners
-    return () => {
-      offers.forEach(offer => {
-        const element = document.getElementById(offer.id);
-        if (element) {
-          element.removeEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
-        }
-      });
-    };
-  }, [messages]);
-
-  // Function to handle Enter key press
-  const handleKeyPress = (event) => {
+  const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
+      event.preventDefault();
       handleSend();
     }
   };
 
-  // Rendering JSX
+  const showOffer1 = () => {
+    setDialogContent({ 
+      message: "You have selected Offer 1. This offer includes ...",
+      imageUrl: "/path/to/offer1image.jpg", 
+      link: "https://example.com/offer1"
+    });
+    setOpen(true);
+  };
+
+  const showOffer2 = () => {
+    setDialogContent({ 
+      message: "You have selected Offer 2. This offer includes ...",
+      imageUrl: "/path/to/offer2image.jpg", 
+      link: "https://example.com/offer2"
+    });
+    setOpen(true);
+  };
+
+  const showOffer3 = () => {
+    setDialogContent({ 
+      message: "You have selected Offer 3. This offer includes ...",
+      imageUrl: "/path/to/offer3image.jpg", 
+      link: "https://example.com/offer3"
+    });
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <>
-      <div style={{ height: '100vh' }} className="d-flex bg-light">
-        <div className="d-flex flex-column flex-grow-1">
-          <div className="p-3 bg-white border-bottom d-flex align-items-center" style={{ position: 'fixed', width: '100%' }}>
-            <Image src={girlchat} alt="Bot" width={60} height={60} style={{ borderRadius: '50%' }} />
-            <div className="ms-3">
-              <div className="fw-semibold">Ayesha</div>
-              <div className="text-muted small" style={{ display: 'inline-block' }}>
-                <span style={{ height: '15px', width: '15px', backgroundColor: 'green', borderRadius: '50%', display: 'inline-block', marginTop: '2.6px', marginRight: '2px' }}></span>
-                <span>Active Now</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex-grow-1 p-4 overflow-auto" style={{ marginTop: '5rem' }}>
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`d-flex ${message.sender === 'user' ? 'justify-content-end' : ''} mb-3`}
-                style={{
-                  marginLeft: message.sender === 'user' ? 'auto' : '0',
-                  width: isMobile ? '100%' : '50%',
-                }}
-              >
-                {message.sender === 'bot' ? (
-                  <div
-                    className={`p-2 rounded bg-light border`}
-                    dangerouslySetInnerHTML={{ __html: message.text }}
-                  />
-                ) : (
-                  <div
-                    className={`p-2 rounded bg-primary text-white`}
-                  >
-                    {message.text}
-                  </div>
-                )}
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-            {sendingMessage && (
-              // <div className="text-muted mt-2" style={{ marginRight: 'auto' }}>
-              //   typing
-              // </div>
-              <div className="message bot-message dancing-dots" style={{ fontSize: '3rem', marginRight: 'auto' }}>
-                &nbsp;
-              </div>
-            )}
-          </div>
-          <div className="p-4 bg-white border-top d-flex align-items-center">
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && !sendingMessage && handleSend()}
-              placeholder="Type a message..."
-              className="form-control flex-grow-1"
-              // disabled={sendingMessage}
+    <div className="chat-app">
+      <div className="chat-container">
+        <div className="messages">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
+              dangerouslySetInnerHTML={{ __html: message.text }}
             />
-            <button className="btn btn-primary ms-2" onClick={handleSend} disabled={sendingMessage}>
-              <SendIcon />
-            </button>
-          </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+        <div className="input-container">
+          <input
+            type="text"
+            placeholder="Type your message..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            ref={inputRef}
+          />
+          <button
+            className="send-button"
+            onClick={handleSend}
+            disabled={sendingMessage}
+          >
+            <SendIcon />
+          </button>
         </div>
       </div>
-    </>
+
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar sx={{ position: 'relative' }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              Offer Details
+            </Typography>
+            <Button autoFocus color="inherit" onClick={() => window.open(dialogContent.link, "_blank")}>
+              Learn More
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <List>
+          <ListItemButton>
+            <ListItemText primary={dialogContent.message} />
+          </ListItemButton>
+          <Divider />
+          <ListItemButton>
+            <ListItemText primary="Image" />
+            <img src={dialogContent.imageUrl} alt="Offer Image" style={{ maxWidth: '100%', height: 'auto' }} />
+          </ListItemButton>
+        </List>
+      </Dialog>
+    </div>
   );
 };
 

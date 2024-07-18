@@ -10,9 +10,12 @@ const About = () => {
             <div className="col-xxl-8 col-lg-7">
               <div className="about-content pr--95">
                 <div className="section-title1 two white mb-50">
-{/*                   <span>About Us</span> */}
-                  <h2>
+                  {/*                   <span>About Us</span> */}
+                  {/* <h2>
                     Welcome to Indenta Solutions, a premier Direct Sales Agency in the UAE dedicated to delivering top-notch financial solutions. We specialize in a wide array of services including credit card sales, SME loans, account opening, corporate banking, and mortgage finance. Our commitment is to provide personalized, innovative, and effective financial solutions to meet the unique needs of our clients
+                  </h2> */}
+                  <h2>
+                    Welcome to Indenta Solutions, a top-notch financial solutions provider for its valued customers. We offer a wide array of services including credit card sales, SME loans, account opening, corporate banking, and mortgage finance. Our commitment is to provide personalized, innovative, and effective financial solutions to meet the unique needs of our clients.
                   </h2>
                 </div>
                 {/* <Link legacyBehavior href="/about">

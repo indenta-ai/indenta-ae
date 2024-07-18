@@ -36,15 +36,24 @@ const AboutPage = () => {
               </div>
             </div>
             <div className="col-lg-8 pl--95">
-              <div className="mission-content-wrap">
+              <div className="mission-content-wrap" style={{marginTop : '2rem'}}>
                 <div className="mission-content-top">
                   <div className="section-title1 w-890">
-                    <h2>
+                    <h2 style={{fontSize : '25px' , fontWeight : 400}}>
                       Our Vision
                     </h2>
                   </div>
-                  <p>
+                  {/* <p>
                     Our vision is to revolutionize the financial services industry in the UAE by setting new standards of excellence, innovation, and customer satisfaction. We aspire to be the leading direct sales agency known for our unwavering commitment to quality, transparency, and personalized service.
+                  </p> */}
+                  <p style={{fontSize : '16px' , marginBottom : 0}}>
+                    - To provide financial solutions tailored to our clients' needs and ensure that our customers are aligned with the requirements of various financial institutions.
+                  </p>
+                  <p style={{fontSize : '16px' , marginBottom : 0}}>
+                  - To maintain the highest level of professionalism and confidentiality in our work ethos.
+                  </p>
+                  <p style={{fontSize : '16px' , marginBottom : 0}}>
+                  - To ensure continuous investments in the Company to achieve the highest standards of performance from our staff and ensure technology and processes are tuned to provide maximum efficiency.
                   </p>
                 </div>
                 <div className="mission-content-bottom">

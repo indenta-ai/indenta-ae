@@ -6748,6 +6748,11 @@ footer .footer-btm .social-area li a:hover i {
   width: 100%;
   z-index: 999;
 }
+.header-topbar-areas {
+  width: 100%;
+  background: black;
+  z-index: 999;
+}
 
 /*=====================================
  17. Home2 Solition Section
