@@ -194,65 +194,6 @@ const ChatAppAlert = () => {
     setWelcomeMessageShown(true);
   }, []);
 
-  // useEffect(() => {
-  //   const handleOkClick = (message, imageUrl, link) => {
-  //     const linkHtml = link ? `<a href="${link}" target="_blank" style="color : black;color: black; font-size: 15px; text-decoration: underline;">Click here for more details</a>` : '';
-  //     const imageHtml = imageUrl ? `<img src="${imageUrl}" alt="Offer Image" style="width: 100%; max-height: 450px; height: auto; max-width: 450px;" id="popupImage" />` : '';
-  //     const fullScreenIconHtml = !isMobile ? `<p style="margin-bottom: 1rem; float: right; cursor: pointer;" onclick="showFullScreenAlert()">fullscreen</p>` : '';
-  //     MySwal.fire({
-  //       html: `
-  //         <div>
-  //         ${fullScreenIconHtml}
-  //           ${imageHtml}
-  //           <p>${message}</p>
-  //           ${linkHtml}
-  //         </div>
-  //       `,
-  //       confirmButtonText: 'OK'
-  //     });
-  //   };
-
-  //   window.showFullScreenAlert = () => {
-  //     if (!isMobile) {
-  //       const image = document.getElementById('popupImage');
-  //       if (image) {
-  //         image.style.width = '30rem';
-  //         image.style.height = '31rem';
-  //         image.style.maxHeight = '504px';
-  //         image.style.maxWidth = '504px';
-  //       }
-  //     }
-  //   };
-
-  //   const offers = [
-  //     { id: 'cbdOne', message: 'Details about CBD One', imageUrl: '/assets/img/pics/pdf3.jpg' },
-  //     { id: 'platinum', message: 'Details about CBD Smiles Visa Platinum', imageUrl: '/assets/img/pics/pdf2.jpg' },
-  //     { id: 'signature', message: 'Details about CBD Smiles Visa Signature', imageUrl: '/assets/img/pics/cp.JPG' },
-  //     { id: 'reward', message: 'Details about CBD Yes Rewards Credit Card', imageUrl: '/assets/img/pics/cp2.jpg' },
-  //     { id: 'superSaver', message: 'Details about Super Saver Visa Signature', imageUrl: '/assets/img/pics/pdf0.jpg' },
-  //     { id: 'visaPlatinum', message: 'Details about Visa Platinum', imageUrl: '/assets/img/pics/cp3.jpg' },
-  //     { id: 'infinite', message: 'Details about Visa Infinite', imageUrl: '/assets/img/pics/S2.jpg' },
-  //   ];
-
-  //   offers.forEach(offer => {
-  //     const element = document.getElementById(offer.id);
-  //     if (element) {
-  //       element.addEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
-  //     }
-  //   });
-
-  //   // Cleanup function to remove event listeners
-  //   return () => {
-  //     offers.forEach(offer => {
-  //       const element = document.getElementById(offer.id);
-  //       if (element) {
-  //         element.removeEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
-  //       }
-  //     });
-  //   };
-  // }, [messages , isMobile]);
-
-  // Function to handle Enter key press
   useEffect(() => {
     const handleOkClick = (message, imageUrl, link) => {
       const linkHtml = link ? `<a href="${link}" target="_blank" style="color : black;color: black; font-size: 15px; text-decoration: underline;">Click here for more details</a>` : '';
@@ -308,7 +249,7 @@ const ChatAppAlert = () => {
   // Rendering JSX
   return (
     <>
-      <div style={{ height: '85vh' }} className="d-flex bg-light">
+      <div style={{ height: '91vh' }} className="d-flex bg-light">
         <div className="d-flex flex-column flex-grow-1">
           <div className="p-3 bg-white border-bottom d-flex align-items-center" style={{ position: 'fixed', width: '100%' }}>
             <Image src={girlchat} alt="Bot" width={60} height={60} style={{ borderRadius: '50%' }} />
