@@ -6,12 +6,6 @@
         "icon": true
     },
     {
-        "id": "8",
-        "label": "Live Chat",
-        "link": "/chatbot",
-        "icon": true
-    },
-    {
         "id": "2",
         "label": "About",
         "link": "/about",
@@ -45,6 +39,12 @@
         "id": "7",
         "label": "Testimonial",
         "link": "/testimonial",
+        "icon": true
+    },
+    {
+        "id": "8",
+        "label": "Live Chat",
+        "link": "/chatbot",
         "icon": true
     }
 ]

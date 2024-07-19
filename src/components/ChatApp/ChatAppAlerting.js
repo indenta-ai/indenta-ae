@@ -18,6 +18,7 @@ const ChatAppAlert = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const lastMessageSenderRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -59,7 +60,7 @@ const ChatAppAlert = () => {
             setEmail(email);
             return email;
           },
-          
+
         });
 
         if (result.isConfirmed) {
@@ -102,6 +103,7 @@ const ChatAppAlert = () => {
       setMessages(newMessages);
       setInputValue('');
       setSendingMessage(true);
+      lastMessageSenderRef.current = 'user';
 
       try {
         const sessionId = localStorage.getItem('session_id'); // Retrieve session ID from localStorage
@@ -139,6 +141,7 @@ const ChatAppAlert = () => {
           // .replace(/\b([IVXLCDM]+)\b/g, '<strong>$1</strong>');
           console.log('botMessage--->', botMessage)
           setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: botMessage }]);
+          lastMessageSenderRef.current = 'bot';
           console.log('Message--->', messages)
         } else {
           throw new Error('Failed to send message');
@@ -146,6 +149,7 @@ const ChatAppAlert = () => {
       } catch (error) {
         console.error('Error sending message:', error);
         setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Something went wrong, try again later!' }]);
+        lastMessageSenderRef.current = 'bot';
       } finally {
         setSendingMessage(false);
         inputRef.current.focus();
@@ -159,7 +163,10 @@ const ChatAppAlert = () => {
   // };
 
   const scrollToBottom = () => {
-    if (!welcomeMessageShown || (welcomeMessageShown && messages.length > 1)) {
+    // if (!welcomeMessageShown || (welcomeMessageShown && messages.length > 1)) {
+    //   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // }
+    if (lastMessageSenderRef.current === 'user') {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   };
@@ -177,13 +184,13 @@ const ChatAppAlert = () => {
       <br /><b style="font-size : 16px ">•</b> NO Interest % on BT and EPP<br /><b style="font-size : 16px ">•</b> Airport lounge access for you through Lounge Key<br /><b style="font-size : 16px ">•</b> Access to a digital concierge channel in addition to telephone and email service<br /><b style="font-size : 16px ">•</b> 50% off on movie tickets at Novo, Reel & VOX cinemas<br /><b style="font-size : 16px ">•</b> Complimentary valet parking service across 30 locations<br /><b style="font-size : 16px ">•</b> Spend AED 500 for an entry into the lucky draw of AED 100,000 every week!<br /><b style="font-size : 16px ">•</b> No annual fees on Credit cards<br /><br />
       <p>We are offering the following credit cards:</p>
       <div class="softButtons" style="display: flex;justify-content: space-between;flex-wrap: wrap;margin-left : 1rem;;margin-top : 1rem">
-        <ul style="list-style-type: disclosure-closed;font-weight : 550">
+        <ul style="list-style-type: disclosure-closed;font-weight : 550; cursor : pointer">
           <li id="cbdOne">CBD One</li>
           <li id="platinum">CBD Smiles Visa Platinum</li>
           <li id="signature">CBD Smiles Visa Signature</li>
           <li id="reward">CBD Yes Rewards Credit Card</li>
         </ul>
-        <ul style="list-style-type: disclosure-closed;font-weight : 550">
+        <ul style="list-style-type: disclosure-closed;font-weight : 550; cursor : pointer">
           <li id="superSaver">Super Saver Visa Signature</li>
           <li id="visaPlatinum">Visa Platinum</li>
           <li id="infinite">Visa Infinite</li>
@@ -195,51 +202,187 @@ const ChatAppAlert = () => {
   }, []);
 
   useEffect(() => {
-    const handleOkClick = (message, imageUrl, link) => {
-      const linkHtml = link ? `<a href="${link}" target="_blank" style="color : black;color: black; font-size: 15px; text-decoration: underline;">Click here for more details</a>` : '';
-      // const imageHtml = imageUrl ? `<img src="${imageUrl}" alt="Offer Image" style="width: 100%; max-height: 450px; height: auto; max-width: 450px;" id="popupImage" />` : '';
-      // const imageHtml = imageUrl ? `<img src="${imageUrl}" alt="Offer Image" style="${isMobile ? 'width: 100%; max-height: 504px; height: 31rem; max-width: 504px;' : 'width: 30rem; max-height: 450px; height: auto; max-width: 450px;'}" id="popupImage" />` : '';
-      const imageHtml = imageUrl ? `<img src="${imageUrl}" alt="Offer Image" style="${isMobile ? 'width: 30rem; max-height: 450px; height: auto; max-width: 320px;' : 'width: 30rem; max-height: 520px; height: 34rem; max-width: 504px;'}" id="popupImage" />` : '';
-      MySwal.fire({
-        html: `
-          <div>
-            ${imageHtml}
+    const handleOkClick = (message, imageUrl, pdfUrl, link) => {
+      let contentHtml = '';
+  
+      if (isMobile) {
+        // Display image on mobile
+        contentHtml = `
+          <div style="width: 100%; text-align: center;">
+            <img src="${imageUrl}" alt="Offer Image" style="width: 100%; max-height: 80vh; object-fit: contain;" />
             <p>${message}</p>
-            ${linkHtml}
+            ${link ? `<a href="${link}" target="_blank" style="color: black; font-size: 15px; text-decoration: underline;">Click here for more details</a>` : ''}
           </div>
-        `,
-        // confirmButtonText: 'OK'
+        `;
+      } else {
+        // Display PDF on web
+        contentHtml = `
+          <div style="width: 100%; height: 80vh; text-align: center;">
+            ${pdfUrl ? `
+              <iframe src="${pdfUrl}" style="width: 100%; height: 100%; border: none;" allowfullscreen></iframe>
+            ` : ''}
+            <p>${message}</p>
+            ${link ? `<a href="${link}" target="_blank" style="color: black; font-size: 15px; text-decoration: underline;">Click here for more details</a>` : ''}
+          </div>
+        `;
+      }
+  
+      MySwal.fire({
+        html: contentHtml,
+        showConfirmButton: false,
+        allowOutsideClick: true,
+        allowEscapeKey: true,
+        customClass: {
+          popup: 'swal-popup',
+        },
+        didOpen: () => {
+          // Optional: Adjust the iframe or popup styles after the popup opens
+          const iframe = document.querySelector('iframe');
+          if (iframe) {
+            iframe.onload = () => {
+              // Optional: Add logic after the iframe has loaded, e.g., adjust height
+              iframe.style.height = '80vh'; // Ensure iframe height is set
+            };
+          }
+          const fullscreenButton = document.createElement('button');
+          const img = document.createElement('img');
+          img.src = '/assets/img/pics/fullscreen.png'; // Set the source of the image
+          img.alt = 'Fullscreen';
+          img.style.width = '30px'; // Adjust the width of the image
+          img.style.height = '30px'; // Adjust the height of the image
+          
+          // Add the image to the button
+          fullscreenButton.appendChild(img);
+          
+          fullscreenButton.style.position = 'absolute';
+          fullscreenButton.style.zIndex = '9999';
+          fullscreenButton.style.right = '9px';
+          fullscreenButton.style.padding = '7px';
+          fullscreenButton.style.backgroundColor = 'transparent';
+          fullscreenButton.style.color = '#fff';
+          fullscreenButton.style.border = 'none';
+          fullscreenButton.style.borderRadius = '5px';
+          fullscreenButton.style.cursor = 'pointer';
+        fullscreenButton.onclick = () => {
+          if (iframe.requestFullscreen) {
+            iframe.requestFullscreen();
+          } else if (iframe.mozRequestFullScreen) { // Firefox
+            iframe.mozRequestFullScreen();
+          } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+            iframe.webkitRequestFullscreen();
+          } else if (iframe.msRequestFullscreen) { // IE/Edge
+            iframe.msRequestFullscreen();
+          }
+        };
+  
+          // Optional: Adjust the scroll position or focus
+          const popup = MySwal.getPopup();
+          if (popup) {
+            popup.style.position = 'relative'; // Ensure popup can contain the button
+            popup.appendChild(fullscreenButton);
+          }
+        }
       });
     };
-
+  
     const offers = [
-      { id: 'cbdOne', message: 'Details about CBD One', imageUrl: '/assets/img/pics/pdf3.jpg' },
-      { id: 'platinum', message: 'Details about CBD Smiles Visa Platinum', imageUrl: '/assets/img/pics/pdf2.jpg' },
-      { id: 'signature', message: 'Details about CBD Smiles Visa Signature', imageUrl: '/assets/img/pics/cp.JPG' },
-      { id: 'reward', message: 'Details about CBD Yes Rewards Credit Card', imageUrl: '/assets/img/pics/cp2.jpg' },
-      { id: 'superSaver', message: 'Details about Super Saver Visa Signature', imageUrl: '/assets/img/pics/pdf0.jpg' },
-      { id: 'visaPlatinum', message: 'Details about Visa Platinum', imageUrl: '/assets/img/pics/cp3.jpg' },
-      { id: 'infinite', message: 'Details about Visa Infinite', imageUrl: '/assets/img/pics/S2.jpg' },
+      { id: 'cbdOne', message: 'Details about CBD One', imageUrl: '/assets/img/pics/pdf3.jpg', pdfUrl: '/assets/img/pics/cbdone.pdf' },
+      { id: 'platinum', message: 'Details about CBD Smiles Visa Platinum', imageUrl: '/assets/img/pics/pdf2.jpg', pdfUrl: '/assets/img/pics/visaPlatinum.pdf' },
+      { id: 'signature', message: 'Details about CBD Smiles Visa Signature', imageUrl: '/assets/img/pics/cp.JPG', pdfUrl: '/assets/img/pics/visaSignature.pdf' },
+      { id: 'reward', message: 'Details about CBD Yes Rewards Credit Card', imageUrl: '/assets/img/pics/cp2.jpg', pdfUrl: '/assets/img/pics/smilesPlatinum.pdf' },
+      { id: 'superSaver', message: 'Details about Super Saver Visa Signature', imageUrl: '/assets/img/pics/pdf0.jpg', pdfUrl: '/assets/img/pics/superSaver.pdf' },
+      { id: 'visaPlatinum', message: 'Details about Visa Platinum', imageUrl: '/assets/img/pics/cp3.jpg', pdfUrl: '/assets/img/pics/YesCard.pdf' },
+      { id: 'infinite', message: 'Details about Visa Infinite', imageUrl: '/assets/img/pics/S2.jpg', pdfUrl: '/assets/img/pics/cbdInfinite.pdf' },
     ];
-
+  
     offers.forEach(offer => {
       const element = document.getElementById(offer.id);
       if (element) {
-        element.addEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
+        element.addEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.pdfUrl, offer.link));
       }
     });
-
+  
     // Cleanup function to remove event listeners
     return () => {
       offers.forEach(offer => {
         const element = document.getElementById(offer.id);
         if (element) {
-          element.removeEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
+          element.removeEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.pdfUrl, offer.link));
         }
       });
     };
-  }, [messages , isMobile]);
-  
+  }, [messages, isMobile]);
+
+  // useEffect(() => {
+  //   // const handleOkClick = (message, imageUrl, pdfUrl, link) => {
+  //   //   let contentHtml = '';
+
+  //   //   // Determine whether to display an image or PDF based on device type
+  //   //   if (isMobile) {
+  //   //     // Display image on mobile
+  //   //     contentHtml = `
+  //   //     <div style="width: 100%; text-align: center;">
+  //   //       <img src="${imageUrl}" alt="Offer Image" style="width: 100%; max-height: 80vh; object-fit: contain;" />
+  //   //       <p>${message}</p>
+  //   //       ${link ? `<a href="${link}" target="_blank" style="color: black; font-size: 15px; text-decoration: underline;">Click here for more details</a>` : ''}
+  //   //     </div>
+  //   //   `;
+  //   //   } else {
+  //   //     // Display PDF on web, if pdfUrl is provided
+  //   //     contentHtml = `
+  //   //     <div id="pdf-container" style="width: 100%; height: 80vh;">
+  //   //     <iframe src="${imageUrl}" style="width: 100%; height: 80vh;" frameborder="0"></iframe>
+  //   //     </div>
+  //   //   `;
+  //   //   }
+
+  //   //   MySwal.fire({
+  //   //     html: contentHtml,
+  //   //     showConfirmButton: false,
+  //   //     allowOutsideClick: true,
+  //   //     allowEscapeKey: true,
+  //   //     customClass: {
+  //   //       popup: 'swal-popup',
+  //   //     },
+  //   //     didOpen: () => {
+  //   //       if (!isMobile && pdfUrl && pdfUrl.endsWith('.pdf')) {
+  //   //         PDFObject.embed(pdfUrl, '#pdf-container');
+  //   //       }
+  //   //     }
+  //   //   });
+  //   // };
+
+  //   // const offers = [
+  //   //   { id: 'cbdOne', message: 'Details about CBD One', imageUrl: '/assets/img/pics/pdf3.jpg' },
+  //   //   { id: 'platinum', message: 'Details about CBD Smiles Visa Platinum', imageUrl: '/assets/img/pics/pdf2.jpg' },
+  //   //   { id: 'signature', message: 'Details about CBD Smiles Visa Signature', imageUrl: '/assets/img/pics/cp.JPG' },
+  //   //   { id: 'reward', message: 'Details about CBD Yes Rewards Credit Card', imageUrl: '/assets/img/pics/cp2.jpg' },
+  //   //   { id: 'superSaver', message: 'Details about Super Saver Visa Signature', imageUrl: '/assets/img/pics/pdf0.jpg' },
+  //   //   { id: 'visaPlatinum', message: 'Details about Visa Platinum', imageUrl: '/assets/img/pics/cp3.jpg' },
+  //   //   { id: 'infinite', message: 'Details about Visa Infinite', imageUrl: '/assets/img/pics/S2.jpg' },
+  //   //   { id: 'testing', message: 'Details of pdf testing ', imageUrl: '/assets/img/pics/1.pdf' },
+  //   // ];
+
+    
+    
+  //   offers.forEach(offer => {
+  //     const element = document.getElementById(offer.id);
+  //     if (element) {
+  //       element.addEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
+  //     }
+  //   });
+
+  //   // Cleanup function to remove event listeners
+  //   return () => {
+  //     offers.forEach(offer => {
+  //       const element = document.getElementById(offer.id);
+  //       if (element) {
+  //         element.removeEventListener('click', () => handleOkClick(offer.message, offer.imageUrl, offer.link));
+  //       }
+  //     });
+  //   };
+  // }, [messages, isMobile]);
+
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       handleSend();
