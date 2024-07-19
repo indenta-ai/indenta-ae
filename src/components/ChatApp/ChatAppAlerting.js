@@ -243,47 +243,48 @@ const ChatAppAlert = () => {
               // Optional: Add logic after the iframe has loaded, e.g., adjust height
               iframe.style.height = '80vh'; // Ensure iframe height is set
             };
-          }
-          const fullscreenButton = document.createElement('button');
-          const img = document.createElement('img');
-          img.src = '/assets/img/pics/fullscreen.png'; // Set the source of the image
-          img.alt = 'Fullscreen';
-          img.style.width = '30px'; // Adjust the width of the image
-          img.style.height = '30px'; // Adjust the height of the image
-          
-          // Add the image to the button
-          fullscreenButton.appendChild(img);
-          
-          fullscreenButton.style.position = 'absolute';
-          fullscreenButton.style.zIndex = '9999';
-          fullscreenButton.style.right = '9px';
-          fullscreenButton.style.padding = '7px';
-          fullscreenButton.style.backgroundColor = 'transparent';
-          fullscreenButton.style.color = '#fff';
-          fullscreenButton.style.border = 'none';
-          fullscreenButton.style.borderRadius = '5px';
-          fullscreenButton.style.cursor = 'pointer';
-        fullscreenButton.onclick = () => {
-          if (iframe.requestFullscreen) {
-            iframe.requestFullscreen();
-          } else if (iframe.mozRequestFullScreen) { // Firefox
-            iframe.mozRequestFullScreen();
-          } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari, and Opera
-            iframe.webkitRequestFullscreen();
-          } else if (iframe.msRequestFullscreen) { // IE/Edge
-            iframe.msRequestFullscreen();
-          }
-        };
+          }if (!isMobile && iframe) {
+            const fullscreenButton = document.createElement('button');
+            const img = document.createElement('img');
+            img.src = '/assets/img/pics/fullscreen.png'; // Set the source of the image
+            img.alt = 'Fullscreen';
+            img.style.width = '30px'; // Adjust the width of the image
+            img.style.height = '30px'; // Adjust the height of the image
   
-          // Optional: Adjust the scroll position or focus
-          const popup = MySwal.getPopup();
-          if (popup) {
-            popup.style.position = 'relative'; // Ensure popup can contain the button
-            popup.appendChild(fullscreenButton);
+            // Add the image to the button
+            fullscreenButton.appendChild(img);
+  
+            fullscreenButton.style.position = 'absolute';
+            fullscreenButton.style.zIndex = '9999';
+            fullscreenButton.style.right = '9px';
+            fullscreenButton.style.padding = '7px';
+            fullscreenButton.style.backgroundColor = 'transparent';
+            fullscreenButton.style.color = '#fff';
+            fullscreenButton.style.border = 'none';
+            fullscreenButton.style.borderRadius = '5px';
+            fullscreenButton.style.cursor = 'pointer';
+            fullscreenButton.onclick = () => {
+              if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+              } else if (iframe.mozRequestFullScreen) { // Firefox
+                iframe.mozRequestFullScreen();
+              } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                iframe.webkitRequestFullscreen();
+              } else if (iframe.msRequestFullscreen) { // IE/Edge
+                iframe.msRequestFullscreen();
+              }
+            };
+  
+            // Optional: Adjust the scroll position or focus
+            const popup = MySwal.getPopup();
+            if (popup) {
+              popup.style.position = 'relative'; // Ensure popup can contain the button
+              popup.appendChild(fullscreenButton);
+            }
           }
         }
       });
-    };
+    };  
   
     const offers = [
       { id: 'cbdOne', message: 'Details about CBD One', imageUrl: '/assets/img/pics/pdf3.jpg', pdfUrl: '/assets/img/pics/cbdone.pdf' },
