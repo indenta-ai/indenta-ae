@@ -40,7 +40,7 @@ const ChatAppAlert = () => {
       }
       try {
         const result = await MySwal.fire({
-          title: 'Welcome To CBD Bank',
+          title: 'Welcome To Indenta Solution',
           html: '<input type="email" id="email" class="swal2-input" placeholder="Enter your email" required>',
           confirmButtonText: 'Continue',
           allowOutsideClick: false,
@@ -93,7 +93,9 @@ const ChatAppAlert = () => {
     // Call fetchSessionId function when component mounts
     fetchSessionId();
 
-
+    return () => {
+      MySwal.close();
+    };
   }, []);
 
   // Function to handle sending messages
