@@ -319,10 +319,10 @@ const Footer = () => {
             </div>
             <div className="footer-btm">
               <div className="copyright-area">
-                <p>
+                {/* <p>
                   Copyright 2023 <a href="#">Aploxn</a> | Design By{" "}
                   <a href="https://www.egenslab.com/">Egens Lab</a>
-                </p>
+                </p> */}
               </div>
               <ul className="social-area">
                 <li>

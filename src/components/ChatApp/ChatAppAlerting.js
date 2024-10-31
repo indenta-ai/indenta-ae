@@ -127,14 +127,7 @@ const ChatAppAlert = () => {
           const data = response.data;
           console.log('data--->', data)
           let botMessage = data.response;
-          // botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-          // botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-          // botMessage = botMessage.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br />');
           botMessage = botMessage
-            // .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // .replace(/\#\#(.#?)\#\#/g, '<strong>$1</strong>')
-            // .replace(/\#\#\#(.#?)\#\#\#/g, '<strong>$1</strong>')
-            // .replace(/\n/g, '<br />')
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold text with **
             .replace(/##([^#]+)##/g, '<strong>$1</strong>')   // Bold text with ##
             .replace(/###([^#]+)###/g, '<strong>$1</strong><br />')
