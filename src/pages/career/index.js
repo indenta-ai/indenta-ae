@@ -2,6 +2,7 @@ import MainLayout from '@/src/components/layout/MainLayout'
 import Link from 'next/link'
 import React from 'react'
 import CountUp from 'react-countup';
+// 
 const CarrerPage = () => {
   return (
     <MainLayout>
